@@ -17,13 +17,15 @@ function BookingPage({ user, onLogout }) {
     setLoading(true);
 
     try {
-      await addDoc(collection(db, "bookings"), {
-        name: user.phoneNumber,
-        service,
-        date,
-        time,
-        createdAt: new Date(),
-      });
+        await addDoc(collection(db, "bookings"), {
+            name: user.name || user.email,
+            phone: user.phone || "",
+            email: user.email || "",
+            service,
+            date,
+            time,
+            createdAt: new Date(),
+          });
       alert("✅ Booking confirmed!");
       setDate(undefined);
       setTime("");

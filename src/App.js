@@ -1,20 +1,35 @@
-import React, { useState } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import LoginPage from "./pages/LoginPage.js";
+import React, { useState, useEffect } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { auth } from "./firebase";
+import LoginPage from "./pages/LoginPage";
 import BookingPage from "./pages/BookingPage";
 import OwnerDashboard from "./pages/OwnerDashboard";
+import { onAuthStateChanged } from "firebase/auth";
 
 function App() {
   const [user, setUser] = useState(null);
 
-  const handleLogin = (role, phoneNumber) => {
-    setUser({ role, phoneNumber });
+  // Firebase persists Google login
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      if (firebaseUser) {
+        setUser({ role: "customer", email: firebaseUser.email });
+      }
+    });
+    return unsubscribe;
+  }, []);
+
+  const handleLogin = (role, data) => {
+    setUser({ role, ...data });
   };
 
-  const handleLogout = () => setUser(null);
+  const handleLogout = () => {
+    auth.signOut();
+    setUser(null);
+  };
 
   return (
-    <Router>
+    <BrowserRouter>
       <Routes>
         <Route
           path="/"
@@ -32,7 +47,7 @@ function App() {
         />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
-    </Router>
+    </BrowserRouter>
   );
 }
 

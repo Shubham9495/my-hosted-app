@@ -23,7 +23,7 @@ useEffect(() => {
         minHeight: "100vh",
       }}
     >
-      <h2>Welcome, Salon Owner ({user.phoneNumber})</h2>
+      <h2>Welcome, Salon Owner</h2>
       <button
         onClick={onLogout}
         style={{ position: "absolute", right: 20, top: 20 }}
@@ -47,6 +47,7 @@ useEffect(() => {
             <tr>
               <th>Customer</th>
               <th>Service</th>
+              <th>Email</th>
               <th>Date</th>
               <th>Time</th>
             </tr>
@@ -56,6 +57,7 @@ useEffect(() => {
               <tr key={i}>
                 <td>{b.name}</td>
                 <td>{b.service}</td>
+                <td>{b.email}</td>
                 <td>{b.date}</td>
                 <td>{b.time}</td>
               </tr>
