@@ -1,19 +1,38 @@
 import React, { useState } from "react";
+import { collection, addDoc } from "firebase/firestore";
+import { db } from "../firebase";
 
 function BookingPage({ user, onLogout }) {
   const [service, setService] = useState("Haircut");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleBooking = () => {
+  const handleBooking = async () => {
     if (!date || !time) {
       alert("Please select date and time!");
       return;
     }
-    const booking = { name: user.phoneNumber, service, date, time };
-    const oldBookings = JSON.parse(localStorage.getItem("bookings")) || [];
-    localStorage.setItem("bookings", JSON.stringify([...oldBookings, booking]));
-    alert("Booking confirmed!");
+
+    setLoading(true);
+
+    try {
+      await addDoc(collection(db, "bookings"), {
+        name: user.phoneNumber,
+        service,
+        date,
+        time,
+        createdAt: new Date(),
+      });
+      alert("✅ Booking confirmed!");
+      setDate(undefined);
+      setTime("");
+    } catch (error) {
+      console.error("Error adding booking:", error);
+      alert("❌ Something went wrong. Check console for details.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -34,6 +53,7 @@ function BookingPage({ user, onLogout }) {
       </button>
 
       <h3>Book Your Appointment</h3>
+
       <div style={{ margin: "1rem" }}>
         <label>Service: </label>
         <select value={service} onChange={(e) => setService(e.target.value)}>
@@ -63,15 +83,17 @@ function BookingPage({ user, onLogout }) {
 
       <button
         onClick={handleBooking}
+        disabled={loading}
         style={{
-          background: "#e91e63",
+          background: loading ? "#ccc" : "#e91e63",
           color: "white",
           padding: "10px 20px",
           borderRadius: "8px",
           border: "none",
+          cursor: loading ? "not-allowed" : "pointer",
         }}
       >
-        Confirm Booking
+        {loading ? "Booking..." : "Confirm Booking"}
       </button>
     </div>
   );

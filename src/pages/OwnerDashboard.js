@@ -1,7 +1,19 @@
 import React from "react";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../firebase";
+import { useEffect, useState } from "react";
 
 function OwnerDashboard({ user, onLogout }) {
-  const bookings = JSON.parse(localStorage.getItem("bookings")) || [];
+//   const bookings = JSON.parse(localStorage.getItem("bookings")) || [];
+const [bookings, setBookings] = useState([]);
+useEffect(() => {
+    const fetchBookings = async () => {
+      const querySnapshot = await getDocs(collection(db, "bookings"));
+      const data = querySnapshot.docs.map((doc) => doc.data());
+      setBookings(data);
+    };
+    fetchBookings();
+  }, []);
 
   return (
     <div
