@@ -1,5 +1,5 @@
 import React from "react";
-import logo from "./logo.png"; // 👈 Place your image in the src/ folder (e.g., src/logo.png)
+import logo from "./logo.jpg"; // 👈 Place your image in the src/ folder (e.g., src/logo.png)
 
 function App() {
   return (
